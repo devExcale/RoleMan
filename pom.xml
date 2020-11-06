@@ -6,7 +6,7 @@
 
 	<groupId>ovh.excale</groupId>
 	<artifactId>roleman</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.DEVELOP</version>
 
 	<name>RoleMan</name>
 	<description>A Discord bot that can manage roles on a discord guild, using reactions only.</description>
@@ -15,14 +15,37 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jda.utilities.version>3.0.5</jda.utilities.version>
 	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
 			<version>4.2.0_168</version>
+			<exclusions>
+				<exclusion>
+					<groupId>club.minnced</groupId>
+					<artifactId>opus-java</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+
+		<dependency>
+			<groupId>com.jagrosh</groupId>
+			<artifactId>jda-utilities-commons</artifactId>
+			<version>${jda.utilities.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jagrosh</groupId>
+			<artifactId>jda-utilities-command</artifactId>
+			<version>${jda.utilities.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>
@@ -32,6 +55,5 @@
 			<url>https://jcenter.bintray.com</url>
 		</repository>
 	</repositories>
-
 
 </project>
