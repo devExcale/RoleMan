@@ -1,4 +1,4 @@
-package ovh.excale;
+package ovh.excale.roleman;
 
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
