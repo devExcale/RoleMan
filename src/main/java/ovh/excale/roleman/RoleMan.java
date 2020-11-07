@@ -35,11 +35,7 @@ public class RoleMan {
 	private static JDA jda;
 	private static User selfUser;
 
-	public static JDA getJda() {
-		return jda;
-	}
-
-	public static User getSelfUser() {
+	public static User selfUser() {
 		return selfUser;
 	}
 
