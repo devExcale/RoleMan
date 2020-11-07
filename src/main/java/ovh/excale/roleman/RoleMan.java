@@ -16,7 +16,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RoleMan extends ListenerAdapter {
+public class RoleMan {
+
+	public static final String EMOTE_YES = "\u2705";
+	public static final String EMOTE_NO = "\u274E";
 
 	// Cr4zy5ky_U#1164
 	private static final String OWNER = "309315257996673025";

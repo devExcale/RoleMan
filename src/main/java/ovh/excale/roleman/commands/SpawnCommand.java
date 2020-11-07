@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import ovh.excale.roleman.RoleMan;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,8 +45,8 @@ public class SpawnCommand extends Command {
 					channel.sendMessage(new EmbedBuilder().setTitle(role.getName())
 							.setDescription("React to this message to self add/remove the " + role.getAsMention() + " role")
 							.build()).queue(roleMessage -> {
-								roleMessage.addReaction("\u2705").queue();
-								roleMessage.addReaction("\u274E").queue();
+								roleMessage.addReaction(RoleMan.EMOTE_YES).queue();
+								roleMessage.addReaction(RoleMan.EMOTE_NO).queue();
 							},
 							t -> author.openPrivateChannel()
 									.flatMap(dm -> dm.sendMessage(
