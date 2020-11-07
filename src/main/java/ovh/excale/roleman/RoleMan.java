@@ -2,11 +2,13 @@ package ovh.excale.roleman;
 
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import ovh.excale.roleman.commands.SpawnCommand;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,13 +27,17 @@ public class RoleMan extends ListenerAdapter {
 	};
 
 	private static final String TOKEN;
-
 	private static final Logger logger;
 
 	private static JDA jda;
+	private static User selfUser;
 
 	public static JDA getJda() {
 		return jda;
+	}
+
+	public static User getSelfUser() {
+		return selfUser;
 	}
 
 	static {
@@ -68,22 +74,25 @@ public class RoleMan extends ListenerAdapter {
 			return;
 		}
 
-		CommandClient client = new CommandClientBuilder().setPrefix("role:")
-				.setActivity(Activity.watching("roles"))
-				.setOwnerId(OWNER)
+		CommandClient client = new CommandClientBuilder().setOwnerId(OWNER)
+				.addCommands(new SpawnCommand())
 				.setCoOwnerIds(CO_OWNERS)
+				.setActivity(Activity.watching("roles | role:help"))
+				.setPrefix("role:")
 				.build();
 
 		try {
 
-			jda = JDABuilder.create(TOKEN,
-					GatewayIntent.GUILD_MEMBERS,
-					GatewayIntent.GUILD_MESSAGES,
-					GatewayIntent.GUILD_MESSAGE_REACTIONS).addEventListeners(client).build();
+			jda = JDABuilder.create(TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS)
+					.addEventListeners(new EventWaiter(), client)
+					.build()
+					.awaitReady();
 
 		} catch(Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
+
+		selfUser = jda.getSelfUser();
 
 	}
 
