@@ -7,6 +7,7 @@
 	<groupId>ovh.excale</groupId>
 	<artifactId>roleman</artifactId>
 	<version>1.0.DEVELOP</version>
+	<packaging>jar</packaging>
 
 	<name>RoleMan</name>
 	<description>A Discord bot that can manage roles on a discord guild, using reactions only.</description>
@@ -55,5 +56,33 @@
 			<url>https://jcenter.bintray.com</url>
 		</repository>
 	</repositories>
+
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-5</version>
+
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
 
 </project>
