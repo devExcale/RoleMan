@@ -9,6 +9,9 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import ovh.excale.roleman.commands.SpawnCommand;
+import ovh.excale.roleman.listeners.GuildMessageReactionListener;
+import ovh.excale.roleman.listeners.RoleAddHandler;
+import ovh.excale.roleman.listeners.RoleRemoveHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +56,8 @@ public class RoleMan {
 			try {
 
 				Properties properties = new Properties();
-				InputStream in = RoleMan.class.getClassLoader().getResourceAsStream("bot.properties");
+				InputStream in = RoleMan.class.getClassLoader()
+						.getResourceAsStream("bot.properties");
 				properties.load(in);
 
 				token = properties.getProperty("token");
@@ -74,7 +78,7 @@ public class RoleMan {
 		}
 
 		CommandClient client = new CommandClientBuilder().setOwnerId(OWNER)
-				.addCommands(new SpawnCommand())
+				.addCommands(new SpawnCommand(), new DirectPingCommand(), new PurgeChannelCommand())
 				.setCoOwnerIds(CO_OWNERS)
 				.setActivity(Activity.watching("roles | role:help"))
 				.setPrefix("role:")
