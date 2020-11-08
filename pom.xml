@@ -11,6 +11,7 @@
 
 	<name>RoleMan</name>
 	<description>A Discord bot that can manage roles on a discord guild, using reactions only.</description>
+	<url>https://github.com/Cr4zy5kyU/RoleMan</url>
 
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
