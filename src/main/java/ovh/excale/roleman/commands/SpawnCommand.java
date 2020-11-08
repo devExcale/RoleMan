@@ -22,12 +22,11 @@ public class SpawnCommand extends Command {
 		this.guildOnly = true;
 		this.usesTopicTags = false;
 		this.botPermissions = new Permission[] {
-				Permission.MANAGE_ROLES,
-				Permission.MESSAGE_WRITE,
-				Permission.MESSAGE_MANAGE,
-				Permission.MESSAGE_ADD_REACTION,
+				Permission.MANAGE_ROLES, Permission.MESSAGE_MANAGE, Permission.MESSAGE_ADD_REACTION,
 		};
-		this.userPermissions = new Permission[] { Permission.MANAGE_ROLES, Permission.MESSAGE_ADD_REACTION };
+		this.userPermissions = new Permission[] {
+				Permission.MANAGE_ROLES, Permission.MESSAGE_ADD_REACTION
+		};
 	}
 
 	@Override
@@ -49,16 +48,19 @@ public class SpawnCommand extends Command {
 								roleMessage.addReaction(RoleMan.EMOTE_NO).queue();
 							},
 							t -> author.openPrivateChannel()
-									.flatMap(dm -> dm.sendMessage(
-											"There has been an error trying to send messages for roles `" + roles.stream()
+									.flatMap(dm -> dm.sendMessageFormat(
+											"There has been an error trying to send messages for roles `%s`\n%s",
+											roles.stream()
 													.map(Role::getName)
-													.collect(Collectors.joining()) + "`\n" + t.getMessage()))
+													.collect(Collectors.joining()),
+											t.getMessage()))
 									.queue()));
 
 		} catch(Exception e) {
 			author.openPrivateChannel()
-					.flatMap(dm -> dm.sendMessage("There has been an error trying to send a message from you command.\n" + e
-							.getMessage()))
+					.flatMap(dm -> dm.sendMessageFormat(
+							"There has been an error trying to send a message from you command.\n%s",
+							e.getMessage()))
 					.queue();
 		}
 
