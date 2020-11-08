@@ -6,7 +6,7 @@
 
 	<groupId>ovh.excale</groupId>
 	<artifactId>roleman</artifactId>
-	<version>1.0.DEVELOP</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>RoleMan</name>
