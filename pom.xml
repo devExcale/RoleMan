@@ -11,6 +11,7 @@
 
 	<name>RoleMan</name>
 	<description>A Discord bot that can manage roles on a discord guild, using reactions only.</description>
+	<url>https://github.com/Cr4zy5kyU/RoleMan</url>
 
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -58,6 +59,7 @@
 	</repositories>
 
 	<build>
+		<finalName>${name}-${version}</finalName>
 		<plugins>
 
 			<plugin>
@@ -66,6 +68,12 @@
 				<version>2.2-beta-5</version>
 
 				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>ovh.excale.roleman.RoleMan</mainClass>
+						</manifest>
+					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
