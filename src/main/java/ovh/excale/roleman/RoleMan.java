@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import ovh.excale.roleman.commands.DirectPingCommand;
+import ovh.excale.roleman.commands.PurgeChannelCommand;
 import ovh.excale.roleman.commands.SpawnCommand;
 import ovh.excale.roleman.listeners.GuildMessageReactionListener;
 import ovh.excale.roleman.listeners.RoleAddHandler;
@@ -84,10 +86,15 @@ public class RoleMan {
 				.setPrefix("role:")
 				.build();
 
+		GuildMessageReactionListener reactionListener = new GuildMessageReactionListener();
+		reactionListener.registerHandlers(new RoleAddHandler(), new RoleRemoveHandler());
+
 		try {
 
-			jda = JDABuilder.create(TOKEN, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS)
-					.addEventListeners(new EventWaiter(), client)
+			jda = JDABuilder.create(TOKEN,
+					GatewayIntent.GUILD_MESSAGES,
+					GatewayIntent.GUILD_MESSAGE_REACTIONS)
+					.addEventListeners(new EventWaiter(), reactionListener, client)
 					.build()
 					.awaitReady();
 
