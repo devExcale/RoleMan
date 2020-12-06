@@ -30,7 +30,7 @@ public class RoleMan {
 	private static final String OWNER = "309315257996673025";
 
 	private static final String[] CO_OWNERS = new String[] {
-			"481080371220316180",        // Lele050201#8305
+			"481080371220316180",       // Lele050201#8305
 			"331031994874200066"        // DEUSps#8621
 	};
 

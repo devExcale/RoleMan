@@ -32,7 +32,8 @@ public class PurgeChannelCommand extends Command {
 		channel.purgeMessages(channel.getHistory()
 				.getRetrievedHistory()
 				.stream()
-				.filter(message -> usersId.contains(message.getAuthor().getId()))
+				.filter(message -> usersId.contains(message.getAuthor()
+						.getId()))
 				.collect(Collectors.toList()));
 	}
 

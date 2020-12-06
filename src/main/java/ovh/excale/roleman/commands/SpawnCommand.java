@@ -43,18 +43,21 @@ public class SpawnCommand extends Command {
 
 					channel.sendMessage(new EmbedBuilder().setTitle(role.getName())
 							.setDescription("React to this message to self add/remove the " + role.getAsMention() + " role")
-							.build()).queue(roleMessage -> {
-								roleMessage.addReaction(RoleMan.EMOTE_YES).queue();
-								roleMessage.addReaction(RoleMan.EMOTE_NO).queue();
-							},
-							t -> author.openPrivateChannel()
-									.flatMap(dm -> dm.sendMessageFormat(
-											"There has been an error trying to send messages for roles `%s`\n%s",
-											roles.stream()
-													.map(Role::getName)
-													.collect(Collectors.joining()),
-											t.getMessage()))
-									.queue()));
+							.build())
+							.queue(roleMessage -> {
+										roleMessage.addReaction(RoleMan.EMOTE_YES)
+												.queue();
+										roleMessage.addReaction(RoleMan.EMOTE_NO)
+												.queue();
+									},
+									t -> author.openPrivateChannel()
+											.flatMap(dm -> dm.sendMessageFormat(
+													"There has been an error trying to send messages for roles `%s`\n%s",
+													roles.stream()
+															.map(Role::getName)
+															.collect(Collectors.joining()),
+													t.getMessage()))
+											.queue()));
 
 		} catch(Exception e) {
 			author.openPrivateChannel()
@@ -64,7 +67,8 @@ public class SpawnCommand extends Command {
 					.queue();
 		}
 
-		message.delete().queue();
+		message.delete()
+				.queue();
 	}
 
 }
