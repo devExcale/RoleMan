@@ -1,5 +1,6 @@
 package ovh.excale.roleman.listeners;
 
+import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
@@ -39,26 +40,54 @@ public class GuildMessageReactionListener extends ListenerAdapter {
 
 	@Override
 	public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
-		GuildMessageReactionHandler handler = handlers.get(event.getReaction()
-				.getReactionEmote()
-				.getAsReactionCode());
-		User user = event.getUser();
+		MessageReaction reaction = event.getReaction();
+		User author = reaction.getChannel()
+				.retrieveMessageById(event.getMessageId())
+				.complete()
+				.getAuthor();
+		String selfId = event.getJDA()
+				.getSelfUser()
+				.getId();
 
-		if(handler != null && !user.isBot())
-			handler.onReactionAdd(event);
+		if(selfId.equals(author.getId())) {
+			User user = event.getUser();
 
-		event.getReaction().removeReaction(user).queue();
+			if(!user.isBot()) {
+				GuildMessageReactionHandler handler = handlers.get(event.getReaction()
+						.getReactionEmote()
+						.getAsReactionCode());
+
+				if(handler != null && !user.isBot())
+					handler.onReactionAdd(event);
+			}
+
+			event.getReaction()
+					.removeReaction(user)
+					.queue();
+		}
 
 	}
 
 	@Override
 	public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
-		GuildMessageReactionHandler handler = handlers.get(event.getReaction()
-				.getReactionEmote()
-				.getAsReactionCode());
+		MessageReaction reaction = event.getReaction();
+		User author = reaction.getChannel()
+				.retrieveMessageById(event.getMessageId())
+				.complete()
+				.getAuthor();
+		String selfId = event.getJDA()
+				.getSelfUser()
+				.getId();
+		User user = event.getUser();
 
-		if(handler != null)
-			handler.onReactionRemove(event);
+		if(selfId.equals(author.getId()) && user != null && !user.isBot()) {
+			GuildMessageReactionHandler handler = handlers.get(event.getReaction()
+					.getReactionEmote()
+					.getAsReactionCode());
+
+			if(handler != null)
+				handler.onReactionRemove(event);
+		}
 
 	}
 
