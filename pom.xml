@@ -59,7 +59,7 @@
 	</repositories>
 
 	<build>
-		<finalName>${name}-${version}</finalName>
+		<finalName>${project.name}-${project.version}</finalName>
 		<plugins>
 
 			<plugin>
