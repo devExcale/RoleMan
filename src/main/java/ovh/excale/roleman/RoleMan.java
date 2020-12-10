@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import ovh.excale.roleman.commands.DirectPingCommand;
 import ovh.excale.roleman.commands.PurgeChannelCommand;
 import ovh.excale.roleman.commands.SpawnCommand;
@@ -15,9 +16,12 @@ import ovh.excale.roleman.listeners.GuildMessageReactionListener;
 import ovh.excale.roleman.listeners.RoleAddHandler;
 import ovh.excale.roleman.listeners.RoleRemoveHandler;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Scanner;
+import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,15 +30,11 @@ public class RoleMan {
 	public static final String EMOTE_YES = "\u2705";
 	public static final String EMOTE_NO = "\u274E";
 
-	// Cr4zy5ky_U#1164
-	private static final String OWNER = "309315257996673025";
+	public static final String OWNER;
+	public static final String[] CO_OWNERS;
+	public static final String VERSION;
 
-	private static final String[] CO_OWNERS = new String[] {
-			"481080371220316180",       // Lele050201#8305
-			"331031994874200066"        // DEUSps#8621
-	};
-
-	private static final String TOKEN;
+	private transient static final String TOKEN;
 	private static final Logger logger;
 
 	private static JDA jda;
@@ -49,35 +49,45 @@ public class RoleMan {
 		// GET LOGGER
 		logger = Logger.getLogger(RoleMan.class.getSimpleName());
 
-		// GET TOKEN FROM SYS_ENV
-		String token = System.getenv("ROLEMAN_BOT_TOKEN");
+		// VERSION META
+		String version;
+		InputStream in = RoleMan.class.getClassLoader()
+				.getResourceAsStream("VERSION");
+		if(in != null)
+			try(Scanner scanner = new Scanner(in)) {
+				version = scanner.nextLine();
+			} catch(Exception e) {
+				logger.log(Level.WARNING, "Coudln't retrieve VERSION meta", e);
+				version = "unknown";
+			}
+		else
+			version = "unknown";
 
-		// TOKEN NOT FOUND
-		if(token == null)
-			// GET TOKEN FROM PROPERTIES
+		VERSION = version;
+
+		for(String arg : new String[] { "DS_TOKEN", "DS_OWNER" })
 			try {
-
-				Properties properties = new Properties();
-				InputStream in = RoleMan.class.getClassLoader()
-						.getResourceAsStream("bot.properties");
-				properties.load(in);
-
-				token = properties.getProperty("token");
-
-			} catch(IOException e) {
-				logger.log(Level.WARNING, e.getMessage(), e);
-				token = null;
+				Objects.requireNonNull(System.getenv(arg));
+			} catch(NullPointerException e) {
+				logger.log(Level.SEVERE, "Missing " + arg + ", shutting down", e);
+				System.exit(-1);
 			}
 
-		TOKEN = token;
+		BiFunction<String, String, String> coal = (s1, s2) -> s1 != null ? s1 : s2;
+
+		// GET ENVs
+		TOKEN = System.getenv("DS_TOKEN");
+		OWNER = System.getenv("DS_OWNER");
+		CO_OWNERS = Arrays.stream(Optional.ofNullable(System.getenv("DS_COOWNERS"))
+				.orElse("")
+				.trim()
+				.split(" *, *"))
+				.filter(s -> s.length() != 0)
+				.toArray(String[]::new);
 	}
 
 	public static void main(String[] args) {
 
-		if(TOKEN == null) {
-			logger.log(Level.SEVERE, "Missing bot token, shutting down.");
-			return;
-		}
 
 		CommandClient client = new CommandClientBuilder().setOwnerId(OWNER)
 				.addCommands(new SpawnCommand(), new DirectPingCommand(), new PurgeChannelCommand())
@@ -94,6 +104,10 @@ public class RoleMan {
 			jda = JDABuilder.create(TOKEN,
 					GatewayIntent.GUILD_MESSAGES,
 					GatewayIntent.GUILD_MESSAGE_REACTIONS)
+					.disableCache(CacheFlag.ACTIVITY,
+							CacheFlag.VOICE_STATE,
+							CacheFlag.EMOTE,
+							CacheFlag.CLIENT_STATUS)
 					.addEventListeners(new EventWaiter(), reactionListener, client)
 					.build()
 					.awaitReady();
@@ -103,6 +117,8 @@ public class RoleMan {
 		}
 
 		selfUser = jda.getSelfUser();
+
+		logger.log(Level.INFO, String.format("Bot running on version %s.", VERSION));
 
 	}
 
